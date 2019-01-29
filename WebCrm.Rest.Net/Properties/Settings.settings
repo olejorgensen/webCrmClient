@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WebCrm.Rest.Net.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="BaseUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://api.webcrm.com</Value>
+    </Setting>
+    <Setting Name="ApiVersion" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="ApiKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">INSERT_YOUR_API_TOKEN_HERE</Value>
+    </Setting>
+    <Setting Name="UnsupportedSchemeExceptionMessage" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">This client only supports HTTPS</Value>
+    </Setting>
+    <Setting Name="DefaultTimeoutMillis" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">250</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

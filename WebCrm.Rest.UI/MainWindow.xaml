@@ -1,0 +1,577 @@
+﻿<Window
+    x:Class="WebCrm.Rest.UI.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Model="clr-namespace:WebCrm.Rest.Model;assembly=WebCrm.Rest.Model"
+    xmlns:local="clr-namespace:WebCrm.Rest.UI"
+    Title="MainWindow"
+    Width="800"
+    Height="450"
+    mc:Ignorable="d"
+    Loaded="Window_Loaded"
+    Closed="Window_Closed" Initialized="Window_Initialized">
+    <Window.Resources>
+        <CollectionViewSource x:Key="organisationDtoViewSource" d:DesignSource="{d:DesignInstance {x:Type Model:OrganisationDto}, CreateList=True}"/>
+        <CollectionViewSource x:Key="selectedOrganisationDtoViewSource" d:DesignSource="{d:DesignInstance {x:Type Model:OrganisationDto}, CreateList=True}"/>
+        <CollectionViewSource x:Key="dupesOrganisationDtoViewSource" d:DesignSource="{d:DesignInstance {x:Type Model:OrganisationDto}, CreateList=True}"/>
+        <CollectionViewSource x:Key="personDtoViewSource" d:DesignSource="{d:DesignInstance {x:Type Model:PersonDto}, CreateList=True}"/>
+        <CollectionViewSource x:Key="relationDtoViewSource" d:DesignSource="{d:DesignInstance {x:Type Model:RelationDto}, CreateList=True}"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="6"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Label Content="Filter" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+                <TextBox x:Name="FilterTextBox" Grid.Column="1" TextChanged="FilterTextBox_TextChanged" KeyUp="FilterTextBox_KeyUp" />
+            </Grid>
+
+            <TabControl Grid.Row="1" SelectionChanged="TabControl_SelectionChanged">
+
+                <TabItem Header="Organisations" >
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="6"/>
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <TabControl>
+                                <TabItem Header="All Organisations" x:Name="OrganisationsTabItem" >
+                                    <Grid DataContext="{StaticResource organisationDtoViewSource}">
+                                        <DataGrid x:Name="organisationDtoDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" RowDetailsVisibilityMode="VisibleWhenSelected" SelectionChanged="BaseObjectDataGrid_SelectionChanged">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn x:Name="organisationNameColumn" Binding="{Binding OrganisationName}" Header="Name" Width="SizeToHeader"/>
+                                                <DataGridTextColumn x:Name="organisationDivisionNameColumn" Binding="{Binding OrganisationDivisionName}" Header="Division Name" Width="SizeToHeader"/>
+                                                <DataGridTextColumn x:Name="organisationExtraCustom1Column" Binding="{Binding OrganisationExtraCustom1}" Header="Extra Custom 1" Width="SizeToHeader"/>
+                                                <DataGridTextColumn x:Name="organisationExtraCustom2Column" Binding="{Binding OrganisationExtraCustom2}" Header="Extra Custom 2" Width="SizeToHeader"/>
+                                                <DataGridTextColumn x:Name="organisationVatNumber" Binding="{Binding OrganisationVatNumber}" Header="VAT Number" Width="SizeToHeader"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </Grid>
+                                </TabItem>
+                                <TabItem Header="Duplicate CVR Numbers" x:Name="DupeOrganisationsTabItem" >
+                                    <Grid DataContext="{StaticResource dupesOrganisationDtoViewSource}">
+                                        <DataGrid x:Name="dupeOrganisationDtoDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" RowDetailsVisibilityMode="VisibleWhenSelected" SelectionChanged="BaseObjectDataGrid_SelectionChanged">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn x:Name="organisationNameColumn2" Binding="{Binding OrganisationName}" Header="Name" Width="SizeToHeader"/>
+                                                <DataGridTextColumn x:Name="organisationDivisionNameColumn2" Binding="{Binding OrganisationDivisionName}" Header="Division Name" Width="SizeToHeader"/>
+                                                <DataGridTextColumn x:Name="organisationExtraCustom1Column2" Binding="{Binding OrganisationExtraCustom1}" Header="Extra Custom 1" Width="SizeToHeader"/>
+                                                <DataGridTextColumn x:Name="organisationExtraCustom2Column2" Binding="{Binding OrganisationExtraCustom2}" Header="Extra Custom 2" Width="SizeToHeader"/>
+                                                <DataGridTextColumn x:Name="organisationVatNumber2" Binding="{Binding OrganisationVatNumber}" Header="VAT Number" Width="SizeToHeader"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </Grid>
+                                </TabItem>
+                            </TabControl>
+                        </Grid>
+                        <GridSplitter Grid.Column="1" Background="BlanchedAlmond" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                        <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                            <Grid x:Name="grid1" DataContext="{StaticResource selectedOrganisationDtoViewSource}" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Label Content="Address:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="0" Text="{Binding OrganisationAddress, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Alert:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationAlertTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="1" Text="{Binding OrganisationAlert, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Approval Status:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationApprovalStatusTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="2" Text="{Binding OrganisationApprovalStatus, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="City:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCityTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="3" Text="{Binding OrganisationCity, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Comment:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCommentTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="4" Text="{Binding OrganisationComment, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Compare Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="5" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCompareNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="5" Text="{Binding OrganisationCompareName, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Country:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="6" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCountryTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="6" Text="{Binding OrganisationCountry, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Created At:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="7" VerticalAlignment="Center"/>
+                                <DatePicker x:Name="organisationCreatedAtDatePicker" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Grid.Row="7" SelectedDate="{Binding OrganisationCreatedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center"/>
+                                <Label Content="Created By:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="8" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCreatedByTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="8" Text="{Binding OrganisationCreatedBy, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 1:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="9" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom1TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="9" Text="{Binding OrganisationCustom1, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 2:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="16" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom2TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="16" Text="{Binding OrganisationCustom2, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 3:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="17" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom3TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="17" Text="{Binding OrganisationCustom3, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 4:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="18" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom4TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="18" Text="{Binding OrganisationCustom4, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 5:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="19" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom5TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="19" Text="{Binding OrganisationCustom5, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 6:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="20" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom6TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="20" Text="{Binding OrganisationCustom6, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 7:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="21" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom7TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="21" Text="{Binding OrganisationCustom7, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 8:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="22" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom8TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="22" Text="{Binding OrganisationCustom8, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 9:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="23" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom9TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="23" Text="{Binding OrganisationCustom9, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 10:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="10" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom10TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="10" Text="{Binding OrganisationCustom10, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 11:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="11" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom11TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="11" Text="{Binding OrganisationCustom11, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 12:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="12" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom12TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="12" Text="{Binding OrganisationCustom12, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 13:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="13" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom13TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="13" Text="{Binding OrganisationCustom13, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 14:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="14" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom14TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="14" Text="{Binding OrganisationCustom14, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Custom 15:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="15" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationCustom15TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="15" Text="{Binding OrganisationCustom15, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Division Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="24" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationDivisionNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="24" Text="{Binding OrganisationDivisionName, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Domain:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="25" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationDomainTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="25" Text="{Binding OrganisationDomain, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Extra Custom 1:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="26" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationExtraCustom1TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="26" Text="{Binding OrganisationExtraCustom1, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Extra Custom 2:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="27" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationExtraCustom2TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="27" Text="{Binding OrganisationExtraCustom2, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Extra Custom 3:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="28" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationExtraCustom3TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="28" Text="{Binding OrganisationExtraCustom3, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Extra Custom 4:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="29" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationExtraCustom4TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="29" Text="{Binding OrganisationExtraCustom4, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Extra Custom 5:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="30" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationExtraCustom5TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="30" Text="{Binding OrganisationExtraCustom5, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Extra Custom 6:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="31" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationExtraCustom6TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="31" Text="{Binding OrganisationExtraCustom6, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Extra Custom 7:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="32" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationExtraCustom7TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="32" Text="{Binding OrganisationExtraCustom7, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Extra Custom 8:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="33" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationExtraCustom8TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="33" Text="{Binding OrganisationExtraCustom8, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Fax:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="34" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationFaxTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="34" Text="{Binding OrganisationFax, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Gps:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="35" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationGpsTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="35" Text="{Binding OrganisationGps, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="History:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="36" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationHistoryTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="36" Text="{Binding OrganisationHistory, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Id:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="37" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationIdTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="37" Text="{Binding OrganisationId, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Image File Extension:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="38" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationImageFileExtensionTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="38" Text="{Binding OrganisationImageFileExtension, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Industry:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="39" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationIndustryTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="39" Text="{Binding OrganisationIndustry, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Last Displayed At:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="40" VerticalAlignment="Center"/>
+                                <DatePicker x:Name="organisationLastDisplayedAtDatePicker" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Grid.Row="40" SelectedDate="{Binding OrganisationLastDisplayedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center"/>
+                                <Label Content="Last Item Updated At:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="41" VerticalAlignment="Center"/>
+                                <DatePicker x:Name="organisationLastItemUpdatedAtDatePicker" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Grid.Row="41" SelectedDate="{Binding OrganisationLastItemUpdatedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center"/>
+                                <Label Content="Market Data Id:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="42" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationMarketDataIdTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="42" Text="{Binding OrganisationMarketDataId, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Memo:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="43" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationMemoTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="43" Text="{Binding OrganisationMemo, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="44" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="44" Text="{Binding OrganisationName, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="No Ads:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="45" VerticalAlignment="Center"/>
+                                <CheckBox x:Name="organisationNoAdsCheckBox" Content="" Grid.Column="1" HorizontalAlignment="Left" IsChecked="{Binding OrganisationNoAds, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" Margin="3" Grid.Row="45" VerticalAlignment="Center"/>
+                                <Label Content="Outlook Sync:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="46" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationOutlookSyncTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="46" Text="{Binding OrganisationOutlookSync, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Overlay Url:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="47" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationOverlayUrlTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="47" Text="{Binding OrganisationOverlayUrl, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Owner:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="48" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationOwnerTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="48" Text="{Binding OrganisationOwner, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Owner 2:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="49" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationOwner2TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="49" Text="{Binding OrganisationOwner2, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 1:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="50" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus1TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="50" Text="{Binding OrganisationPlus1, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 2:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="61" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus2TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="61" Text="{Binding OrganisationPlus2, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 3:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="63" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus3TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="63" Text="{Binding OrganisationPlus3, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 4:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="64" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus4TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="64" Text="{Binding OrganisationPlus4, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 5:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="65" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus5TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="65" Text="{Binding OrganisationPlus5, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 6:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="66" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus6TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="66" Text="{Binding OrganisationPlus6, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 7:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="67" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus7TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="67" Text="{Binding OrganisationPlus7, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 8:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="68" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus8TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="68" Text="{Binding OrganisationPlus8, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 9:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="69" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus9TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="69" Text="{Binding OrganisationPlus9, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 10:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="51" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus10TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="51" Text="{Binding OrganisationPlus10, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 11:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="52" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus11TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="52" Text="{Binding OrganisationPlus11, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 12:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="53" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus12TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="53" Text="{Binding OrganisationPlus12, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 13:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="54" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus13TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="54" Text="{Binding OrganisationPlus13, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 14:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="55" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus14TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="55" Text="{Binding OrganisationPlus14, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 15:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="56" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus15TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="56" Text="{Binding OrganisationPlus15, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 16:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="57" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus16TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="57" Text="{Binding OrganisationPlus16, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 17:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="58" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus17TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="58" Text="{Binding OrganisationPlus17, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 18:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="59" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus18TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="59" Text="{Binding OrganisationPlus18, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 19:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="60" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus19TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="60" Text="{Binding OrganisationPlus19, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Plus 20:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="62" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPlus20TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="62" Text="{Binding OrganisationPlus20, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Post Code:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="70" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationPostCodeTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="70" Text="{Binding OrganisationPostCode, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Report Temp:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="71" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationReportTempTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="71" Text="{Binding OrganisationReportTemp, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Sla:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="72" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationSlaTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="72" Text="{Binding OrganisationSla, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="State:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="73" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationStateTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="73" Text="{Binding OrganisationState, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Status:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="74" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationStatusTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="74" Text="{Binding OrganisationStatus, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Telephone:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="75" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationTelephoneTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="75" Text="{Binding OrganisationTelephone, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Telephone Search:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="76" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationTelephoneSearchTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="76" Text="{Binding OrganisationTelephoneSearch, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Territory Id:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="77" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationTerritoryIdTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="77" Text="{Binding OrganisationTerritoryId, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Type:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="78" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationTypeTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="78" Text="{Binding OrganisationType, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Updated At:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="79" VerticalAlignment="Center"/>
+                                <DatePicker x:Name="organisationUpdatedAtDatePicker" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Grid.Row="79" SelectedDate="{Binding OrganisationUpdatedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center"/>
+                                <Label Content="Updated By:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="80" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationUpdatedByTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="80" Text="{Binding OrganisationUpdatedBy, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Vat Country:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="81" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationVatCountryTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="81" Text="{Binding OrganisationVatCountry, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Vat Group:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="82" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationVatGroupTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="82" Text="{Binding OrganisationVatGroup, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Vat Number:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="83" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationVatNumberTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="83" Text="{Binding OrganisationVatNumber, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Vat Status:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="84" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationVatStatusTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="84" Text="{Binding OrganisationVatStatus, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="Vat Verified At:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="85" VerticalAlignment="Center"/>
+                                <DatePicker x:Name="organisationVatVerifiedAtDatePicker" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Grid.Row="85" SelectedDate="{Binding OrganisationVatVerifiedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center"/>
+                                <Label Content="Www:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="86" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationWwwTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="86" Text="{Binding OrganisationWww, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XDate 1:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="87" VerticalAlignment="Center"/>
+                                <DatePicker x:Name="organisationXDate1DatePicker" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Grid.Row="87" SelectedDate="{Binding OrganisationXDate1, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center"/>
+                                <Label Content="XDate 2:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="88" VerticalAlignment="Center"/>
+                                <DatePicker x:Name="organisationXDate2DatePicker" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Grid.Row="88" SelectedDate="{Binding OrganisationXDate2, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center"/>
+                                <Label Content="XInt 1:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="89" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXInt1TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="89" Text="{Binding OrganisationXInt1, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XInt 2:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="90" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXInt2TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="90" Text="{Binding OrganisationXInt2, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XInt 3:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="91" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXInt3TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="91" Text="{Binding OrganisationXInt3, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XInt 4:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="92" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXInt4TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="92" Text="{Binding OrganisationXInt4, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XInt 5:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="93" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXInt5TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="93" Text="{Binding OrganisationXInt5, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XInt 6:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="94" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXInt6TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="94" Text="{Binding OrganisationXInt6, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XInt 7:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="95" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXInt7TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="95" Text="{Binding OrganisationXInt7, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XInt 8:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="96" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXInt8TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="96" Text="{Binding OrganisationXInt8, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XMemo 1:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="97" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXMemo1TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="97" Text="{Binding OrganisationXMemo1, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XMemo 2:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="98" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXMemo2TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="98" Text="{Binding OrganisationXMemo2, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XText 1:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="99" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXText1TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="99" Text="{Binding OrganisationXText1, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XText 2:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="100" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXText2TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="100" Text="{Binding OrganisationXText2, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XText 3:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="101" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXText3TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="101" Text="{Binding OrganisationXText3, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XText 4:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="102" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXText4TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="102" Text="{Binding OrganisationXText4, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XText 5:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="103" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXText5TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="103" Text="{Binding OrganisationXText5, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XText 6:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="104" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXText6TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="104" Text="{Binding OrganisationXText6, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XText 7:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="105" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXText7TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="105" Text="{Binding OrganisationXText7, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                                <Label Content="XText 8:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="106" VerticalAlignment="Center"/>
+                                <TextBox x:Name="organisationXText8TextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="106" Text="{Binding OrganisationXText8, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+                            </Grid>
+                        </ScrollViewer>
+                    </Grid>
+
+                </TabItem>
+
+                <TabItem Header="Persons" x:Name="PersonsTabItem">
+
+                    <Grid DataContext="{StaticResource personDtoViewSource}">
+                        <DataGrid x:Name="personDtoDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" RowDetailsVisibilityMode="VisibleWhenSelected" SelectionChanged="BaseObjectDataGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn x:Name="personIdColumn" Binding="{Binding PersonId}" Header="Id" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personOrganisationIdColumn" Binding="{Binding PersonOrganisationId}" Header="Organisation Id" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personTitleColumn" Binding="{Binding PersonTitle}" Header="Title" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personNameColumn" Binding="{Binding PersonName}" Header="Name" Width="SizeToHeader"/>
+                                <!--<DataGridTextColumn x:Name="personFirstNameColumn" Binding="{Binding PersonFirstName}" Header="First Name" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personMiddleNameColumn" Binding="{Binding PersonMiddleName}" Header="Middle Name" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personLastNameColumn" Binding="{Binding PersonLastName}" Header="Last Name" Width="SizeToHeader"/>-->
+                                <DataGridTextColumn x:Name="personDirectPhoneColumn" Binding="{Binding PersonDirectPhone}" Header="Direct Phone" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personMobilePhoneColumn" Binding="{Binding PersonMobilePhone}" Header="Mobile Phone" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personTelephoneSearchColumn" Binding="{Binding PersonTelephoneSearch}" Header="Telephone Search" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personSkypeColumn" Binding="{Binding PersonSkype}" Header="Skype" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personEmailColumn" Binding="{Binding PersonEmail}" Header="Email" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personCommentColumn" Binding="{Binding PersonComment}" Header="Comment" Width="SizeToHeader"/>
+                                <DataGridCheckBoxColumn x:Name="personEmailBouncesColumn" Binding="{Binding PersonEmailBounces}" Header="Email Bounces" Width="SizeToHeader"/>
+                                <DataGridCheckBoxColumn x:Name="personBlockMassEmailColumn" Binding="{Binding PersonBlockMassEmail}" Header="Block Mass Email" Width="SizeToHeader"/>
+                                <DataGridTemplateColumn x:Name="personCreatedAtColumn" Header="Created At" Width="SizeToHeader">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <DatePicker SelectedDate="{Binding PersonCreatedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn x:Name="personCreatedByColumn" Binding="{Binding PersonCreatedBy}" Header="Created By" Width="SizeToHeader"/>
+                                <DataGridTemplateColumn x:Name="personUpdatedAtColumn" Header="Updated At" Width="SizeToHeader">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <DatePicker SelectedDate="{Binding PersonUpdatedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn x:Name="personUpdatedByColumn" Binding="{Binding PersonUpdatedBy}" Header="Updated By" Width="SizeToHeader"/>
+                                <!--<DataGridTemplateColumn x:Name="personLastLoginDateTimeColumn" Header="Last Login Date Time" Width="SizeToHeader">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <DatePicker SelectedDate="{Binding PersonLastLoginDateTime, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>-->
+                                <!--<DataGridTextColumn x:Name="personLoginLogColumn" Binding="{Binding PersonLoginLog}" Header="Login Log" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personCampaignPasswordColumn" Binding="{Binding PersonCampaignPassword}" Header="Campaign Password" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personCampaignWrongPasswordCountColumn" Binding="{Binding PersonCampaignWrongPasswordCount}" Header="Campaign Wrong Password Count" Width="SizeToHeader"/>-->
+                                <!--<DataGridCheckBoxColumn x:Name="personCheckMark1Column" Binding="{Binding PersonCheckMark1}" Header="Check Mark 1" Width="SizeToHeader"/>
+                                    <DataGridCheckBoxColumn x:Name="personCheckMark2Column" Binding="{Binding PersonCheckMark2}" Header="Check Mark 2" Width="SizeToHeader"/>
+                                    <DataGridCheckBoxColumn x:Name="personCheckMark3Column" Binding="{Binding PersonCheckMark3}" Header="Check Mark 3" Width="SizeToHeader"/>
+                                    <DataGridCheckBoxColumn x:Name="personCheckMark4Column" Binding="{Binding PersonCheckMark4}" Header="Check Mark 4" Width="SizeToHeader"/>
+                                    <DataGridCheckBoxColumn x:Name="personCheckMark5Column" Binding="{Binding PersonCheckMark5}" Header="Check Mark 5" Width="SizeToHeader"/>
+                                    <DataGridCheckBoxColumn x:Name="personCheckMark6Column" Binding="{Binding PersonCheckMark6}" Header="Check Mark 6" Width="SizeToHeader"/>
+                                    <DataGridCheckBoxColumn x:Name="personCheckMark7Column" Binding="{Binding PersonCheckMark7}" Header="Check Mark 7" Width="SizeToHeader"/>
+                                    <DataGridCheckBoxColumn x:Name="personCheckMark8Column" Binding="{Binding PersonCheckMark8}" Header="Check Mark 8" Width="SizeToHeader"/>
+                                    <DataGridCheckBoxColumn x:Name="personCheckMark9Column" Binding="{Binding PersonCheckMark9}" Header="Check Mark 9" Width="SizeToHeader"/>
+                                    <DataGridCheckBoxColumn x:Name="personCheckMark10Column" Binding="{Binding PersonCheckMark10}" Header="Check Mark 10" Width="SizeToHeader"/>-->
+                                <DataGridTextColumn x:Name="personCustom1Column" Binding="{Binding PersonCustom1}" Header="Custom 1" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personCustom2Column" Binding="{Binding PersonCustom2}" Header="Custom 2" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personCustom3Column" Binding="{Binding PersonCustom3}" Header="Custom 3" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personCustom4Column" Binding="{Binding PersonCustom4}" Header="Custom 4" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personCustom5Column" Binding="{Binding PersonCustom5}" Header="Custom 5" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personCustom6Column" Binding="{Binding PersonCustom6}" Header="Custom 6" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personCustom7Column" Binding="{Binding PersonCustom7}" Header="Custom 7" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personCustom8Column" Binding="{Binding PersonCustom8}" Header="Custom 8" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="personCustom9Column" Binding="{Binding PersonCustom9}" Header="Custom 9" Width="SizeToHeader"/>
+                                <!--<DataGridTextColumn x:Name="personCustom10Column" Binding="{Binding PersonCustom10}" Header="Custom 10" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personCustom11Column" Binding="{Binding PersonCustom11}" Header="Custom 11" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personCustom12Column" Binding="{Binding PersonCustom12}" Header="Custom 12" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personCustom13Column" Binding="{Binding PersonCustom13}" Header="Custom 13" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personCustom14Column" Binding="{Binding PersonCustom14}" Header="Custom 14" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personCustom15Column" Binding="{Binding PersonCustom15}" Header="Custom 15" Width="SizeToHeader"/>-->
+                                <DataGridTextColumn x:Name="personHistoryColumn" Binding="{Binding PersonHistory}" Header="History" Width="SizeToHeader"/>
+                                <!--<DataGridTextColumn x:Name="personImageFileExtensionColumn" Binding="{Binding PersonImageFileExtension}" Header="Image File Extension" Width="SizeToHeader"/>-->
+                                <DataGridTextColumn x:Name="personMarketDateIdColumn" Binding="{Binding PersonMarketDateId}" Header="Market Date Id" Width="SizeToHeader"/>
+                                <!--<DataGridTextColumn x:Name="personMemberGroupIdColumn" Binding="{Binding PersonMemberGroupId}" Header="Member Group Id" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personMemberLanguageIdColumn" Binding="{Binding PersonMemberLanguageId}" Header="Member Language Id" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personMemberNumberColumn" Binding="{Binding PersonMemberNumber}" Header="Member Number" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personMemberPasswordColumn" Binding="{Binding PersonMemberPassword}" Header="Member Password" Width="SizeToHeader"/>
+                                    <DataGridTemplateColumn x:Name="personMemberStartDateColumn" Header="Member Start Date" Width="SizeToHeader">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <DatePicker SelectedDate="{Binding PersonMemberStartDate, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn x:Name="personMemberStatusIdColumn" Binding="{Binding PersonMemberStatusId}" Header="Member Status Id" Width="SizeToHeader"/>-->
+                                <!--<DataGridTextColumn x:Name="personMemberWrongPasswordCountColumn" Binding="{Binding PersonMemberWrongPasswordCount}" Header="Member Wrong Password Count" Width="SizeToHeader"/>-->
+                                <DataGridTextColumn x:Name="personMemoColumn" Binding="{Binding PersonMemo}" Header="Memo" Width="SizeToHeader"/>
+                                <!--<DataGridTextColumn x:Name="personPasswordColumn" Binding="{Binding PersonPassword}" Header="Password" Width="SizeToHeader"/>-->
+                                <!--<DataGridTextColumn x:Name="personPlus1Column" Binding="{Binding PersonPlus1}" Header="Plus 1" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus2Column" Binding="{Binding PersonPlus2}" Header="Plus 2" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus20Column" Binding="{Binding PersonPlus20}" Header="Plus 20" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus3Column" Binding="{Binding PersonPlus3}" Header="Plus 3" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus4Column" Binding="{Binding PersonPlus4}" Header="Plus 4" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus5Column" Binding="{Binding PersonPlus5}" Header="Plus 5" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus6Column" Binding="{Binding PersonPlus6}" Header="Plus 6" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus7Column" Binding="{Binding PersonPlus7}" Header="Plus 7" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus8Column" Binding="{Binding PersonPlus8}" Header="Plus 8" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus9Column" Binding="{Binding PersonPlus9}" Header="Plus 9" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus10Column" Binding="{Binding PersonPlus10}" Header="Plus 10" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus11Column" Binding="{Binding PersonPlus11}" Header="Plus 11" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus12Column" Binding="{Binding PersonPlus12}" Header="Plus 12" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus13Column" Binding="{Binding PersonPlus13}" Header="Plus 13" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus14Column" Binding="{Binding PersonPlus14}" Header="Plus 14" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus15Column" Binding="{Binding PersonPlus15}" Header="Plus 15" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus16Column" Binding="{Binding PersonPlus16}" Header="Plus 16" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus17Column" Binding="{Binding PersonPlus17}" Header="Plus 17" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus18Column" Binding="{Binding PersonPlus18}" Header="Plus 18" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personPlus19Column" Binding="{Binding PersonPlus19}" Header="Plus 19" Width="SizeToHeader"/>-->
+                                <!--<DataGridTextColumn x:Name="personSalutationColumn" Binding="{Binding PersonSalutation}" Header="Salutation" Width="SizeToHeader"/>-->
+                                <!--<DataGridTextColumn x:Name="personSortOrderColumn" Binding="{Binding PersonSortOrder}" Header="Sort Order" Width="SizeToHeader"/>
+                                    <DataGridTextColumn x:Name="personSupportLanguageIdColumn" Binding="{Binding PersonSupportLanguageId}" Header="Support Language Id" Width="SizeToHeader"/>-->
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                    </Grid>
+
+                </TabItem>
+
+                <TabItem Header="Relations" x:Name="RelationsTabItem">
+                    <Grid DataContext="{StaticResource relationDtoViewSource}">
+                        <DataGrid x:Name="relationDtoDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" RowDetailsVisibilityMode="VisibleWhenSelected" SelectionChanged="BaseObjectDataGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn x:Name="relationCodeColumn" Binding="{Binding RelationCode}" Header="Code" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="relationCommentColumn" Binding="{Binding RelationComment}" Header="Comment" Width="SizeToHeader"/>
+                                <DataGridTemplateColumn x:Name="relationCreatedAtColumn" Header="Created At" Width="SizeToHeader">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <DatePicker SelectedDate="{Binding RelationCreatedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn x:Name="relationCreatedByColumn" Binding="{Binding RelationCreatedBy}" Header="Created By" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="relationIdColumn" Binding="{Binding RelationId}" Header="Id" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="relationOrganisation1IdColumn" Binding="{Binding RelationOrganisation1Id}" Header="Organisation 1 Id" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="relationOrganisation2IdColumn" Binding="{Binding RelationOrganisation2Id}" Header="Organisation 2 Id" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="relationPerson1IdColumn" Binding="{Binding RelationPerson1Id}" Header="Person 1 Id" Width="SizeToHeader"/>
+                                <DataGridTextColumn x:Name="relationPerson2IdColumn" Binding="{Binding RelationPerson2Id}" Header="Person 2 Id" Width="SizeToHeader"/>
+                                <DataGridTemplateColumn x:Name="relationUpdatedAtColumn" Header="Updated At" Width="SizeToHeader">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <DatePicker SelectedDate="{Binding RelationUpdatedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn x:Name="relationUpdatedByColumn" Binding="{Binding RelationUpdatedBy}" Header="Updated By" Width="SizeToHeader"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+            </TabControl>
+        </Grid>
+        <GridSplitter Grid.Column="1" Background="BlanchedAlmond" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Visible">
+            <RichTextBox x:Name="json" FontFamily="Courier New" FontStretch="Condensed" />
+        </ScrollViewer>
+    </Grid>
+</Window>
