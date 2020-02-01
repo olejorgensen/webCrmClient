@@ -9,7 +9,7 @@ using System.Windows;
 namespace WebCrm.Rest.UI
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Interaction logic for the App
     /// </summary>
     public partial class App : Application
     {
